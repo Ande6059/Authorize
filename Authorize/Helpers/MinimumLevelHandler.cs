@@ -9,11 +9,14 @@ namespace Authorize.Helpers
 {
     public class MinimumLevelHandler : AuthorizationHandler<MinimumLevelRequirement>
     {
+        public object User { get; private set; }
+
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinimumLevelRequirement requirement)
         {
             var level = context.User.FindFirst(c => c.Type == ClaimTypes.Level).Value;
-            throw new NotImplementedException();
 
+
+           
             var userLevel = User.Level;
 
             if (userLevel >= requirement.MinimumLevel) context.Succeed(requirement);

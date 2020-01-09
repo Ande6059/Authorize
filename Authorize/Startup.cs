@@ -35,7 +35,7 @@ namespace Authorize
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            services.AddSingleton<IAuthorizationHandler, MinimumLevelHandler>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -62,7 +62,7 @@ namespace Authorize
                 options.AddPolicy("RequireAdminOnly", policy =>
                         policy.RequireRole("Admin"));
             });
-            services.AddSingleton<IAuthorizationHandler, MinimumLevelHandler>;
+           
 
             
 
@@ -102,8 +102,8 @@ namespace Authorize
 
         private async Task CreateUserRole(IServiceProvider serviceProvider)
         {
-            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var UserManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
             IdentityResult roleResult;
             var roleCheck = await RoleManager.RoleExistsAsync("Admin");
 
@@ -112,7 +112,7 @@ namespace Authorize
                 roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin"));
             }
 
-            var _admin = await UserManager.FindByEmailAsync("admin@admin.dk");
+            var _admin = await userManager.FindByEmailAsync("admin@admin.dk");
             if (_admin == null)
             {
                 var admin = new IdentityUser
@@ -122,10 +122,10 @@ namespace Authorize
 
                 };
 
-                var createAdmin = await UserManager.CreateAsync(admin, "Admin2019!");
+                var createAdmin = await userManager.CreateAsync(admin, "Admin2019!");
                 if (createAdmin.Succeeded)
                 {
-                    await UserManager.AddToRoleAsync(admin, "Admin");
+                    await userManager.AddToRoleAsync(admin, "Admin");
                 }
             }
 

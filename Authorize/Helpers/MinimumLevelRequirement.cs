@@ -8,6 +8,9 @@ namespace Authorize.Helpers
 {
     public class MinimumLevelRequirement : IAuthorizationRequirement
     {
+
+
+        public object User { get; set; }
         public int MinimumLevel { get; set; }
         public MinimumLevelRequirement(int minimumLevel)
         {
